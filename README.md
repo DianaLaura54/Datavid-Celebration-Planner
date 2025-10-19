@@ -86,7 +86,7 @@ python main.py
 # Navigate to http://localhost:8000
 ```
 
-The application auto-initializes the database and seeds 6 sample members across different time zones (USA, UK, Germany, Japan, Canada, India).
+The application auto-initializes the database and seeds 6 sample members across different time zones (USA, UK, Germany, Japan, Canada, India, Romania).
 
 ## Configuration
 
