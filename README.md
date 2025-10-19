@@ -16,7 +16,7 @@ The application follows a layered architecture with clear separation of concerns
 
 **AI Layer**: Pluggable design supporting both mock mode (template-based, no API keys) and OpenAI GPT-3.5 integration with full explainability.
 
-![Architecture Diagram](architecture.svg)
+![alt text](diagrama.png)
 
 ## Data Model
 
