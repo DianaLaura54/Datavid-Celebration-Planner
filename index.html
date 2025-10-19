@@ -181,6 +181,7 @@
                             <option value="India">India</option>
                             <option value="Brazil">Brazil</option>
                             <option value="Canada">Canada</option>
+                            <option value="Romania">Romania</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -197,8 +198,8 @@
             <h2>Members</h2>
             <div class="filters">
                 <button onclick="loadMembers(false, false)">All Members</button>
-                <button class="secondary" onclick="loadMembers(true, false)">Sort by Birthday</button>
-                <button class="secondary" onclick="loadMembers(true, true)">Next 30 Days</button>
+                <button  onclick="loadMembers(false, false)">Sort by Birthday</button>
+                <button onclick="loadMembers(false, true)">Next 30 Days</button>
             </div>
             <table class="members-table" id="membersTable">
                 <thead>
@@ -256,7 +257,7 @@
                         <button class="action-btn" onclick="generateMessage(${member.id}, 'formal')">
                             Generate Message (Formal)
                         </button>
-                        <button class="action-btn secondary" onclick="sendEmail(${member.id}, 'friendly')">
+                        <button class="action-btn" onclick="sendEmail(${member.id}, 'friendly')">
                             Send Email (Dry-Run)
                         </button>
                     </td>

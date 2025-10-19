@@ -94,7 +94,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Datavid Celebration Planner", lifespan=lifespan)
 
 
-
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     print(f"[DEBUG] Validation Error: {exc.errors()}")
