@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datavid Celebration Planner</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        button.secondary {
+            background: #48bb78;
+        }
+        button.secondary:hover {
+            background: #38a169;
+        }
+        .members-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .members-table th, .members-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .members-table th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #333;
+        }
+        .members-table tr:hover {
+            background: #f7fafc;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge.today {
+            background: #ffd700;
+            color: #333;
+        }
+        .badge.upcoming {
+            background: #48bb78;
+            color: white;
+        }
+        .message-box {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+        .explanation {
+            background: #fff5e6;
+            border-left: 4px solid #ffa500;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .error {
+            background: #fee;
+            border-left: 4px solid #f00;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+            color: #c00;
+        }
+        .success {
+            background: #efe;
+            border-left: 4px solid #0a0;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+            color: #060;
+        }
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .action-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Datavid Celebration Planner</h1>
+        <p class="subtitle">Manage birthdays across time zones with AI-powered personal messages</p>
+
+        <div class="section">
+            <h2>Add New Member</h2>
+            <form id="addMemberForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>First Name *</label>
+                        <input type="text" id="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name *</label>
+                        <input type="text" id="lastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Birth Date (YYYY-MM-DD) *</label>
+                        <input type="date" id="birthDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Country *</label>
+                        <select id="country" required>
+                            <option value="">Select Country</option>
+                            <option value="USA">USA</option>
+                            <option value="UK">UK</option>
+                            <option value="Germany">Germany</option>
+                            <option value="Japan">Japan</option>
+                            <option value="Australia">Australia</option>
+                            <option value="India">India</option>
+                            <option value="Brazil">Brazil</option>
+                            <option value="Canada">Canada</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>City *</label>
+                        <input type="text" id="city" required>
+                    </div>
+                </div>
+                <button type="submit">Add Member</button>
+            </form>
+            <div id="addResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>Members</h2>
+            <div class="filters">
+                <button onclick="loadMembers(false, false)">All Members</button>
+                <button class="secondary" onclick="loadMembers(true, false)">Sort by Birthday</button>
+                <button class="secondary" onclick="loadMembers(true, true)">Next 30 Days</button>
+            </div>
+            <table class="members-table" id="membersTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Birthday</th>
+                        <th>Location</th>
+                        <th>Days Until</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="membersBody"></tbody>
+            </table>
+        </div>
+
+        <div class="section" id="messageSection" style="display: none;">
+            <h2>AI Birthday Message</h2>
+            <div id="messageContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '';
+
+        async function loadMembers(sortByBirthday = false, upcomingOnly = false) {
+            const params = new URLSearchParams();
+            if (sortByBirthday) params.append('sort_by_birthday', 'true');
+            if (upcomingOnly) params.append('upcoming_only', 'true');
+
+            const response = await fetch(`${API_BASE}/members?${params}`);
+            const members = await response.json();
+
+            const tbody = document.getElementById('membersBody');
+            tbody.innerHTML = '';
+
+            members.forEach(member => {
+                const row = document.createElement('tr');
+
+                let badge = '';
+                if (member.days_until_birthday === 0) {
+                    badge = '<span class="badge today">TODAY!</span>';
+                } else if (member.days_until_birthday <= 7) {
+                    badge = '<span class="badge upcoming">Soon</span>';
+                }
+
+                row.innerHTML = `
+                    <td>${member.first_name} ${member.last_name}</td>
+                    <td>${member.birth_date}</td>
+                    <td>${member.city}, ${member.country}</td>
+                    <td>${member.days_until_birthday} days ${badge}</td>
+                    <td>
+                        <button class="action-btn" onclick="generateMessage(${member.id}, 'friendly')">
+                            Generate Message (Friendly)
+                        </button>
+                        <button class="action-btn" onclick="generateMessage(${member.id}, 'formal')">
+                            Generate Message (Formal)
+                        </button>
+                        <button class="action-btn secondary" onclick="sendEmail(${member.id}, 'friendly')">
+                            Send Email (Dry-Run)
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        async function generateMessage(memberId, tone) {
+            const response = await fetch(`${API_BASE}/members/${memberId}/birthday-message?tone=${tone}`, {
+                method: 'POST'
+            });
+            const data = await response.json();
+
+            const messageSection = document.getElementById('messageSection');
+            const messageContent = document.getElementById('messageContent');
+
+            messageContent.innerHTML = `
+                <div class="message-box">
+                    <h3>Birthday Message</h3>
+                    <p style="font-size: 16px; margin-top: 10px;">${data.message}</p>
+                </div>
+                <div class="explanation">
+                    <h4> AI Explainability</h4>
+                    <p><strong>Model:</strong> ${data.explanation.model}</p>
+                    <p><strong>Method:</strong> ${data.explanation.method}</p>
+                    <p><strong>Parameters:</strong> ${JSON.stringify(data.explanation.parameters, null, 2)}</p>
+                    <p style="margin-top: 10px;"><strong>Rationale:</strong> ${data.explanation.rationale}</p>
+                </div>
+            `;
+
+            messageSection.style.display = 'block';
+            messageSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function sendEmail(memberId, tone) {
+            const response = await fetch(`${API_BASE}/members/${memberId}/send-email?tone=${tone}&dry_run=true`, {
+                method: 'POST'
+            });
+            const data = await response.json();
+
+            const messageSection = document.getElementById('messageSection');
+            const messageContent = document.getElementById('messageContent');
+
+            messageContent.innerHTML = `
+                <div class="success">
+                    <h3> Email Status: ${data.status.toUpperCase()}</h3>
+                    <p><strong>To:</strong> ${data.email.to}</p>
+                    <p><strong>Subject:</strong> ${data.email.subject}</p>
+                    <p><strong>Body:</strong> ${data.email.body}</p>
+                    <p style="margin-top: 10px; font-style: italic;">${data.message}</p>
+                </div>
+            `;
+
+            messageSection.style.display = 'block';
+            messageSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('addMemberForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const member = {
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                birth_date: document.getElementById('birthDate').value,
+                country: document.getElementById('country').value,
+                city: document.getElementById('city').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/members`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(member)
+                });
+
+                const result = document.getElementById('addResult');
+
+                if (response.ok) {
+                    result.innerHTML = '<div class="success">Member added successfully!</div>';
+                    document.getElementById('addMemberForm').reset();
+                    loadMembers();
+                } else {
+                    const error = await response.json();
+                    result.innerHTML = `<div class="error">${error.detail}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('addResult').innerHTML =
+                    `<div class="error">Error: ${error.message}</div>`;
+            }
+        });
+
+
+        loadMembers(true, false);
+    </script>
+</body>
+</html>
