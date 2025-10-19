@@ -179,18 +179,12 @@ This data allows reviewers to immediately test sorting by upcoming birthdays and
 ├── index.html           # Web UI
 ├── test_app.py          # Automated test suite
 ├── requirements.txt     # Python dependencies
-├── architecture.svg     # System architecture diagram
+├── diagrama.png         # System architecture diagram
 ├── .env.example         # Configuration template with redacted secrets
 ├── README.md            # This file
 └── members.db           # SQLite database (auto-created)
 ```
 
-## Optional: Docker
-
-```bash
-docker build -t birthday-planner .
-docker run -p 8000:8000 birthday-planner
-```
 
 ## Support
 
