@@ -1,5 +1,6 @@
 # Database files (will be auto-created when app runs)
 members.db
+test_members.db
 *.db
 
 # Environment variables (contains your secrets)

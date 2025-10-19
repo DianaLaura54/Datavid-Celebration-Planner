@@ -84,11 +84,12 @@ def seed_data():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-
-    init_db()
-    seed_data()
+    # Startup - only if not in test mode
+    if os.getenv("TESTING") != "true":
+        init_db()
+        seed_data()
     yield
-
+    # Shutdown (cleanup if needed)
 
 
 app = FastAPI(title="Datavid Celebration Planner", lifespan=lifespan)

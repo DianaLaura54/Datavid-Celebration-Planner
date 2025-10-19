@@ -2,22 +2,40 @@ import pytest
 from fastapi.testclient import TestClient
 from datetime import date, timedelta
 import os
-import sys
+import sqlite3
 
-
-os.environ["DB_PATH"] = ":memory:"
+# Set test environment BEFORE importing main
+os.environ["DB_PATH"] = "test_members.db"  # Use a test database file
 os.environ["MOCK_AI"] = "true"
 
-from main import app, init_db, calculate_days_until_birthday, seed_data
+# Now import from main
+from main import app, init_db, calculate_days_until_birthday, seed_data, get_db
 
 
-init_db()
-seed_data()
+# Setup: Initialize database once before all tests
+@pytest.fixture(scope="session", autouse=True)
+def setup_database():
+    # Remove old test database if exists
+    if os.path.exists("test_members.db"):
+        os.remove("test_members.db")
 
+    # Initialize and seed
+    init_db()
+    seed_data()
+
+    yield
+
+    # Cleanup after all tests
+    if os.path.exists("test_members.db"):
+        os.remove("test_members.db")
+
+
+# Create test client
 client = TestClient(app)
 
 
 def test_add_valid_member():
+    """Test adding a valid member"""
     response = client.post("/members", json={
         "first_name": "Test",
         "last_name": "User",
@@ -32,6 +50,7 @@ def test_add_valid_member():
 
 
 def test_add_underage_member():
+    """Test that underage members are rejected"""
     today = date.today()
     recent_date = today - timedelta(days=365 * 10)
 
@@ -47,6 +66,7 @@ def test_add_underage_member():
 
 
 def test_duplicate_member():
+    """Test that duplicate members are rejected"""
     member_data = {
         "first_name": "Duplicate",
         "last_name": "Test",
@@ -58,13 +78,13 @@ def test_duplicate_member():
     response1 = client.post("/members", json=member_data)
     assert response1.status_code == 201
 
-
     response2 = client.post("/members", json=member_data)
     assert response2.status_code == 400
     assert "already exists" in response2.json()["detail"]
 
 
 def test_list_members():
+    """Test listing all members"""
     response = client.get("/members")
     assert response.status_code == 200
     members = response.json()
@@ -73,6 +93,7 @@ def test_list_members():
 
 
 def test_sort_by_birthday():
+    """Test sorting members by upcoming birthday"""
     response = client.get("/members?sort_by_birthday=true")
     assert response.status_code == 200
     members = response.json()
@@ -83,6 +104,7 @@ def test_sort_by_birthday():
 
 
 def test_upcoming_birthdays():
+    """Test filtering for upcoming birthdays in next 30 days"""
     response = client.get("/members?upcoming_only=true")
     assert response.status_code == 200
     members = response.json()
@@ -92,6 +114,7 @@ def test_upcoming_birthdays():
 
 
 def test_generate_birthday_message_friendly():
+    """Test AI message generation with friendly tone"""
     members_response = client.get("/members")
     members = members_response.json()
 
@@ -110,6 +133,7 @@ def test_generate_birthday_message_friendly():
 
 
 def test_generate_birthday_message_formal():
+    """Test AI message generation with formal tone"""
     members_response = client.get("/members")
     members = members_response.json()
 
@@ -125,6 +149,7 @@ def test_generate_birthday_message_formal():
 
 
 def test_send_email_dry_run():
+    """Test email sending in dry-run mode"""
     members_response = client.get("/members")
     members = members_response.json()
 
@@ -141,31 +166,31 @@ def test_send_email_dry_run():
 
 
 def test_calculate_days_until_birthday():
+    """Test birthday calculation logic"""
     today = date.today()
-
 
     today_str = today.strftime("%Y-%m-%d")
     assert calculate_days_until_birthday(today_str) == 0
-
 
     tomorrow = today + timedelta(days=1)
     tomorrow_birth = date(1990, tomorrow.month, tomorrow.day)
     assert calculate_days_until_birthday(tomorrow_birth.strftime("%Y-%m-%d")) == 1
 
-
     yesterday = today - timedelta(days=1)
     if yesterday.year == today.year:
         yesterday_birth = date(1990, yesterday.month, yesterday.day)
         days = calculate_days_until_birthday(yesterday_birth.strftime("%Y-%m-%d"))
-        assert days > 300  # Should be next year
+        assert days > 300
 
 
 def test_member_not_found():
+    """Test 404 for non-existent member"""
     response = client.get("/members/99999")
     assert response.status_code == 404
 
 
 def test_invalid_tone():
+    """Test invalid tone parameter"""
     members_response = client.get("/members")
     members = members_response.json()
 
