@@ -184,7 +184,50 @@ This data allows reviewers to immediately test sorting by upcoming birthdays and
 ├── README.md            # This file
 └── members.db           # SQLite database (auto-created)
 ```
+## Configuration
+The application uses a simple configuration approach via environment variables or a .env file.
+Quick Setup (No Configuration Needed)
+Mock Mode (Default): The application works immediately without any configuration. Just run python main.py and it uses template-based AI generation.
+Configuration Files
+requirements.txt: Contains all Python dependencies. Install with:
+bashpip install -r requirements.txt
+Dependencies: fastapi, uvicorn, pydantic, pytz, openai, pytest, httpx
+.env.example: Configuration template with redacted secrets:
+bash# Database Configuration
+DB_PATH=members.db
 
+# AI Configuration
+MOCK_AI=true
+
+# OpenAI API Key (REDACTED - only needed if MOCK_AI=false)
+# Get your key from: https://platform.openai.com/api-keys
+OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Server Configuration
+HOST=127.0.0.1
+PORT=8000
+Using OpenAI Mode (Optional)
+To enable real OpenAI GPT-3.5 integration:
+
+1.Copy configuration template:
+
+bashcp .env.example .env
+
+2.Edit .env and set:
+
+bashMOCK_AI=false
+OPENAI_API_KEY=sk-your-actual-key-here
+
+3.Restart application
+
+Note: OpenAI mode requires an API key from https://platform.openai.com/api-keys and credits in your account.
+Environment Variables (Alternative)
+Instead of using .env file, set variables directly:
+bashexport MOCK_AI=true              # Use mock AI (default)
+export OPENAI_API_KEY=sk-xxx...  # OpenAI key (only if MOCK_AI=false)
+export DB_PATH=members.db        # Database file path
+export HOST=127.0.0.1
+export PORT=8000
 
 ## Support
 
