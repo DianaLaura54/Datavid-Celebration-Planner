@@ -12,7 +12,7 @@ import pytz
 
 DB_PATH = os.getenv("DB_PATH", "members.db")
 MOCK_AI = os.getenv("MOCK_AI", "true").lower() == "true"
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "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")
 
 
 COUNTRY_TIMEZONES = {
