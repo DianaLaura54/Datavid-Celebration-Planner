@@ -1,0 +1,24 @@
+# Database files (will be auto-created when app runs)
+members.db
+*.db
+
+# Environment variables (contains your secrets)
+.env
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Testing cache
+.pytest_cache/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
