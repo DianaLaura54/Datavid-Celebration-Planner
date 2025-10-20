@@ -7,7 +7,7 @@ import sqlite3
 os.environ["DB_PATH"] = "test_members.db"
 os.environ["MOCK_AI"] = "true"
 
-# Now import from main
+
 from main import app, init_db, calculate_days_until_birthday, seed_data, get_db
 
 @pytest.fixture(scope="session", autouse=True)
