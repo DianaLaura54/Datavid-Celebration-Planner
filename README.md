@@ -229,9 +229,3 @@ export DB_PATH=members.db        # Database file path
 export HOST=127.0.0.1
 export PORT=8000
 
-## Support
-
-For issues or questions, check:
-- API documentation: http://localhost:8000/docs (auto-generated OpenAPI)
-- Test output: `pytest test_app.py -v` for comprehensive validation
-- All endpoints return JSON errors with clear messages on validation failures
